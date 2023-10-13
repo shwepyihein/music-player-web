@@ -1,9 +1,9 @@
-import { getGenreList } from '@/api/dashboard';
+import { getAuthorList, getGenreList } from '@/api/dashboard';
 import AuthorPage from './AuthorPage';
 
 const Page = async () => {
-  const { data: gerne } = await getGenreList();
-  return <AuthorPage gerne={gerne} />;
+  const { data: author } = await getAuthorList();
+  return <AuthorPage author={author} />;
 };
 
 export default Page;

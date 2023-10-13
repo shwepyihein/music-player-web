@@ -24,10 +24,10 @@ export const getAuthorId = async (id: string) => {
   return await MusicAPI.get(`/author/${id}`);
 };
 
-export const updateAuthroById = async (id: string, data: any) => {
-  return await MusicAPI.get(`/author/${id}`, data);
+export const updateAuthorById = async (id: number, data: any) => {
+  return await MusicAPI.put(`/author/update/${id}`, data);
 };
 
-export const deleteAuthorById = async (id: string) => {
+export const deleteAuthorById = async (id: number) => {
   return await MusicAPI.delete(`/author/${id}`);
 };

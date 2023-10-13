@@ -1,5 +1,6 @@
 'use client';
 
+import { deleteAuthorById } from '@/api/genre-author';
 import {
   Table,
   TableBody,
@@ -18,15 +19,23 @@ export type AudioList = {
 };
 
 export const GenreTable = ({
-  gerne,
+  author,
   changeType,
+  fetchAuthor,
 }: {
-  gerne: { id: number; name: string }[];
+  author: { id: number; name: string }[];
   changeType: (
     type: 'create' | 'update',
     data: { id: number; name: string }
   ) => void;
+  fetchAuthor: () => void;
 }) => {
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteAuthorById(id);
+      await fetchAuthor();
+    } catch (error) {}
+  };
   return (
     <div className="rounded-md border">
       <Table>
@@ -38,7 +47,7 @@ export const GenreTable = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {gerne?.map((item) => (
+          {author?.map((item) => (
             <TableRow className="text-center" key={item.id}>
               <TableCell>{item.id}</TableCell>
               <TableCell>{item.name}</TableCell>
@@ -51,7 +60,12 @@ export const GenreTable = ({
                 >
                   <Pencil size={20} />
                 </div>
-                <div className="cursor-pointer rounded-md hover:bg-accent p-2">
+                <div
+                  onClick={() => {
+                    handleDelete(item.id);
+                  }}
+                  className="cursor-pointer rounded-md hover:bg-accent p-2"
+                >
                   <Trash2 size={20} />
                 </div>
               </TableCell>
