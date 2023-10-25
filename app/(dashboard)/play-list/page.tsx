@@ -10,7 +10,7 @@ export default async function DemoPage() {
   return (
     <div className=" mx-auto py-5">
       <div className="flex justify-end py-5">
-        <Link href="/audio-list/create">
+        <Link href="/play-list/create">
           <Button className="px-10">Create PlayList</Button>
         </Link>
       </div>

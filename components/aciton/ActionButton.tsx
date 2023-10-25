@@ -2,6 +2,7 @@
 import { MoreVertical, Pencil, Trash2, View } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 
+import { deletePlayList } from '@/api/playlist';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-const ActionButton = ({ id }: { id: number }) => {
+const ActionButton = ({ id, type }: { id: number; type: string }) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -17,14 +18,16 @@ const ActionButton = ({ id }: { id: number }) => {
     switch (v) {
       case 'detail':
         return router.push(pathname + `/detail/${id}`);
-      case 'update':
-        return router.push(pathname + `/update/${id}`);
-      case 'delete':
-        return alert('delete');
     }
   };
+  const handleDelete = async () => {
+    if (type === 'playList') {
+      await deletePlayList(id);
+    }
+    window.location.reload();
+  };
   return (
-    <div>
+    <div className="flex gap-5">
       <DropdownMenu>
         <DropdownMenuTrigger>
           <MoreVertical size={20} />
@@ -47,17 +50,16 @@ const ActionButton = ({ id }: { id: number }) => {
           >
             <Pencil size={16} /> <p>Edit</p>
           </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onClick={() => {
-              handleRoute('delete');
-            }}
-            className="flex gap-3"
-          >
-            <Trash2 size={16} /> <p>Delete</p>
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <div
+        onClick={() => {
+          handleDelete();
+        }}
+      >
+        <Trash2 size={16} />
+      </div>
     </div>
   );
 };

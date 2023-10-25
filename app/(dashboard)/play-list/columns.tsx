@@ -37,6 +37,8 @@ export const columns: ColumnDef<Payment>[] = [
   {
     accessorKey: 'id',
     header: 'Action',
-    cell: ({ row }) => <ActionButton id={row.getValue('id')} />,
+    cell: ({ row }) => (
+      <ActionButton type={'playList'} id={row.getValue('id')} />
+    ),
   },
 ];

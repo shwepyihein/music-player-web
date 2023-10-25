@@ -40,7 +40,7 @@ const formSchema = z.object({
   year: z.string(),
   image_path: z.string(),
   file_path: z.string(),
-  duration: z.string(),
+  duration: z.number(),
   author_id: z.string(),
   genre_list: z.number().array(),
 });
@@ -70,7 +70,7 @@ export function CreateForm({ author, genre }: CreateFormProps) {
     defaultValues: {
       title: '',
       description: '',
-      duration: '',
+      duration: 0,
       author_id: '',
       image_path: '',
       file_path: '',
@@ -102,7 +102,7 @@ export function CreateForm({ author, genre }: CreateFormProps) {
 
   const handleDelete = async (path: string) => {
     await DeleteFileWithImagePath(path).then((res) => {
-      form.setValue('duration', '');
+      form.setValue('duration', 0);
       form.setValue('file_path', '');
     });
   };
@@ -168,7 +168,10 @@ export function CreateForm({ author, genre }: CreateFormProps) {
                     <DropdownMenu>
                       <DropdownMenuTrigger className="w-72" asChild>
                         <Button variant="outline">
-                          {field.value ? field.value : 'Please select author'}
+                          {field.value
+                            ? author.find((auth) => auth.id === +field.value)
+                                ?.name
+                            : 'Please select author'}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-72 ">
@@ -180,7 +183,7 @@ export function CreateForm({ author, genre }: CreateFormProps) {
                             <DropdownMenuItem
                               className="w-full pl-5"
                               onClick={() => {
-                                field.onChange(item.name);
+                                field.onChange(item.id);
                               }}
                             >
                               {item.name}
