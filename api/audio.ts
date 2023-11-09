@@ -12,6 +12,6 @@ export const UpdateAudioById = async (id: string, data: any) => {
   return await MusicAPI.get(`/audio/${id}`, data);
 };
 
-export const deleteAudioById = async (id: string) => {
+export const deleteAudioById = async (id: number) => {
   return await MusicAPI.delete(`/audio/${id}`);
 };

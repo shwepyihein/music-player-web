@@ -58,6 +58,6 @@ export const columns: ColumnDef<AudioList>[] = [
   {
     accessorKey: 'id',
     header: 'Action',
-    cell: ({ row }) => <ActionButton id={row.getValue('id')} />,
+    cell: ({ row }) => <ActionButton type={'audio'} id={row.getValue('id')} />,
   },
 ];

@@ -15,3 +15,7 @@ export const getAuthorList = async () => {
 export const getGenreList = async () => {
   return await MusicAPI.get('/gerne/all');
 };
+
+export const getPlayListAndAudio = async () => {
+  return await MusicAPI.get('/playlist/audio?page=1&limit=20&order=desc');
+};

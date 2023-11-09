@@ -1,10 +1,10 @@
-import { Home, Menu, Music, Users } from 'lucide-react';
+import { Home, Menu } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 
 const navigation = [
   { name: 'Home', href: '#', icon: Home, current: true },
-  { name: 'Explore', href: '#', icon: Users, current: false },
-  { name: 'Library', href: '#', icon: Music, current: false },
+  // { name: 'Explore', href: '#', icon: Users, current: false },
+  // { name: 'Library', href: '#', icon: Music, current: false },
 ];
 
 const Sidebar = () => {

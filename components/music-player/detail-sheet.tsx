@@ -9,7 +9,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import { cn } from '@/lib/utils';
-import { MoreVertical, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { MoreVertical } from 'lucide-react';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { AspectRatio } from '../ui/aspect-ratio';
@@ -46,9 +46,9 @@ const DetailSheet = () => {
         </div>
       </SheetTrigger>
       <div className="flex ml-5 items-center gap-5">
-        <ThumbsUp size={20} />
-        <ThumbsDown size={20} />
-        <DropdownMenu>
+        {/* <ThumbsUp size={20} />
+        <ThumbsDown size={20} /> */}
+        {/* <DropdownMenu>
           <DropdownMenuTrigger>
             <MoreVertical />
           </DropdownMenuTrigger>
@@ -60,7 +60,7 @@ const DetailSheet = () => {
             <DropdownMenuItem>Team</DropdownMenuItem>
             <DropdownMenuItem>Subscription</DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </div>
       <SheetContent
         className="bg-black h-screen ml-[--ytmusic-guide-width] pt-[--ytmusic-nav-bar-height] pb-40"

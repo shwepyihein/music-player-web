@@ -1,6 +1,9 @@
 'use client';
 
+import { useMusic } from '@/context/MusicContext';
+import { formatTime } from '@/lib/utils';
 import {
+  Pause,
   Play,
   Repeat,
   Shuffle,
@@ -9,10 +12,26 @@ import {
   Volume2,
 } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
-import { Slider } from '../ui/slider';
 import DetailSheet from './detail-sheet';
+import DisplayTrack from './display';
 
 const MusicPlayer = () => {
+  const {
+    handleProgressChange,
+    progressBarRef,
+    togglePlayPause,
+    currentTrack,
+    timeProgress,
+    duration,
+    isPlaying,
+    audioRef,
+    setDuration,
+    volume,
+    setVolume,
+  } = useMusic();
+  if (!currentTrack) {
+    return null;
+  }
   return (
     <div
       className={twMerge(
@@ -20,7 +39,13 @@ const MusicPlayer = () => {
       )}
     >
       <div className="relative">
-        <Slider defaultValue={[33]} max={100} step={1} />
+        <input
+          type="range"
+          className="bg-white  py-0 w-full"
+          ref={progressBarRef}
+          defaultValue="0"
+          onChange={handleProgressChange}
+        />
 
         <div className="flex-start flex bg-[--music-bar-color] items-center h-[--ytmusic-bar-height]">
           <div className="px-4 gap-5 flex justify-between items-center flex-shrink-0  w-[--ytmusic-guide-width]">
@@ -28,23 +53,48 @@ const MusicPlayer = () => {
               <SkipBack fill="#fff" size={16} />
             </div>
             <div>
-              <Play fill="#fff" size={28} />
+              {!isPlaying ? (
+                <Play onClick={togglePlayPause} fill="#fff" size={16} />
+              ) : (
+                <Pause onClick={togglePlayPause} fill="#fff" size={16} />
+              )}
             </div>
             <div>
               <SkipForward fill="#fff" size={16} />
             </div>
+
             <div>
-              <p className="text-gray-100/40  text-[12px]">0:01 /3:52</p>
+              <p className="text-gray-100/40  text-[12px]">
+                {formatTime(timeProgress)}/{formatTime(duration)}
+              </p>
             </div>
+          </div>
+          <div className="w-[200px] h-[200px] ">
+            <DisplayTrack
+              currentTrack={currentTrack}
+              audioRef={audioRef}
+              progressBarRef={progressBarRef}
+              setDuration={setDuration}
+            />
           </div>
 
           <div className="max-w-[900px] flex items-center mx-auto  h-[--ytmusic-bar-height]  ">
             <DetailSheet />
           </div>
+
           <div className="w-[--ytmusic-guide-width]">
             <div className="grid grid-cols-7 items-center">
-              <div className="w-full col-span-2">
-                <Slider defaultValue={[100]} max={100} step={1} />
+              <div className="w-full flex items-center col-span-2">
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={volume}
+                  style={{
+                    background: `linear-gradient(to right, #fff ${volume}%, #ccc ${volume}%)`,
+                  }}
+                  onChange={(e) => setVolume(e.target.value)}
+                />
               </div>
               <div className="px-4 gap-5 col-span-5 flex  justify-end items-center flex-shrink-0">
                 <div>
@@ -56,8 +106,12 @@ const MusicPlayer = () => {
                 <div>
                   <Shuffle fill="#fff" size={18} />
                 </div>
-                <div className=" rotate-90">
-                  <Play fill="#fff" size={16} />
+                <div className="rotate-90">
+                  {isPlaying ? (
+                    <Play onClick={togglePlayPause} fill="#fff" size={16} />
+                  ) : (
+                    <Pause fill="#fff" size={16} />
+                  )}
                 </div>
               </div>
             </div>

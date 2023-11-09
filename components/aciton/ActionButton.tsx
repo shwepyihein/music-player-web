@@ -2,6 +2,7 @@
 import { MoreVertical, Pencil, Trash2, View } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 
+import { deleteAudioById } from '@/api/audio';
 import { deletePlayList } from '@/api/playlist';
 import {
   DropdownMenu,
@@ -18,11 +19,17 @@ const ActionButton = ({ id, type }: { id: number; type: string }) => {
     switch (v) {
       case 'detail':
         return router.push(pathname + `/detail/${id}`);
+      case 'edit':
+        return router.push(pathname + `/update/${id}`);
     }
   };
+
   const handleDelete = async () => {
     if (type === 'playList') {
       await deletePlayList(id);
+    }
+    if (type === 'audio') {
+      await deleteAudioById(id);
     }
     window.location.reload();
   };
