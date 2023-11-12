@@ -10,14 +10,12 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { Album } from '@/lib/data';
 import { playlists } from '@/lib/playlist';
 import { cn } from '@/lib/utils';
 import { Play } from 'lucide-react';
-import { AspectRatio } from '../ui/aspect-ratio';
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
-  album: Album;
+  album: any;
   width?: number;
   height?: number;
 }
@@ -29,23 +27,24 @@ export function AlbumArtwork({
   className,
   ...props
 }: AlbumArtworkProps) {
+  const path = process.env.NEXT_PUBLIC_IMAGE_PATH;
   return (
     <div className={cn('space-y-3 cursor-pointer', className)} {...props}>
       <ContextMenu>
         <ContextMenuTrigger>
-          <div className="relative overflow-hidden rounded-md">
-            <AspectRatio ratio={3 / 4}>
-              <Image
-                src={album.cover}
-                alt={album.name}
-                width={width}
-                height={height}
-                className={cn(
-                  'h-auto w-auto object-cover transition-all hover:scale-105'
-                  // aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square'
-                )}
-              />
-            </AspectRatio>
+          <div className="relative w-[250px] h-[200px] overflow-hidden rounded-md">
+            <Image
+              src={`${path}/${album?.image_path}`}
+              alt={album.title}
+              width={width}
+              height={height}
+              className={cn(
+                ' object-cover transition-all hover:scale-105',
+
+                'aspect-square'
+              )}
+            />
+
             <div className="absolute hover:bg-[--ytmusic-background-overlay-background] w-full h-full flex justify-center items-center top-0 left-0">
               <Play size={24} fill="#fff" />
             </div>
@@ -87,8 +86,10 @@ export function AlbumArtwork({
         </ContextMenuContent>
       </ContextMenu>
       <div className="space-y-1 text-sm">
-        <h3 className="font-medium leading-none">{album.name}</h3>
-        <p className="text-xs text-muted-foreground">{album.artist}</p>
+        <h3 className="font-medium leading-none">{album?.title}</h3>
+        <p className="text-xs text-muted-foreground">
+          {album?.author_id?.name}
+        </p>
       </div>
     </div>
   );

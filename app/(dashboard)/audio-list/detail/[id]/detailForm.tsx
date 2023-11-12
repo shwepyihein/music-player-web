@@ -14,12 +14,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import UploadFile from '@/components/upload/uploadFile';
 import UploadImage from '@/components/upload/uploadImage';
 import { useForm } from 'react-hook-form';
 
-import { createAudio } from '@/api/audio';
-import { DeleteFileWithImagePath, getImageSignUrl } from '@/api/uploadService';
+import { UpdateAudioById } from '@/api/audio';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,9 +25,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import axios from 'axios';
 import { PlusCircle, Trash2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const formSchema = z.object({
@@ -59,6 +56,7 @@ interface CreateFormProps {
 
 export function DetailForm({ author, detail, genre }: CreateFormProps) {
   const router = useRouter();
+  const params = useParams();
   const [selectedGenreList, setSelectedGenreList] = useState<
     {
       id: number;
@@ -81,41 +79,26 @@ export function DetailForm({ author, detail, genre }: CreateFormProps) {
   console.log(form.watch());
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!imageFile) {
-      return alert('image File Missing');
-    }
-    const uploadData = values;
-    const data = await getImageSignUrl(imageFile);
-    var readFile = imageFile;
-    var reader = new FileReader();
-    reader.readAsDataURL(readFile);
-    await axios
-      .put(data.url, readFile, {
-        headers: {
-          'Content-Type': imageFile.type,
-        },
-      })
-      .then(async (res) => {
-        uploadData.image_path = data.filename;
-        await createAudio(uploadData);
-      });
+    const uploadData = { ...values, author_id: values.author_id };
+    await UpdateAudioById(params.id, uploadData);
   }
 
   useEffect(() => {
     const numberArray = detail.genre_list.map((item: any) => item.id);
     form.reset({
       ...detail,
+      author_id: detail.author_id.id,
       genre_list: numberArray,
     });
     setSelectedGenreList([...detail.genre_list]);
   }, []);
 
-  const handleDelete = async (path: string) => {
-    await DeleteFileWithImagePath(path).then((res) => {
-      form.setValue('duration', 0);
-      form.setValue('file_path', '');
-    });
-  };
+  // const handleDelete = async (path: string) => {
+  //   await DeleteFileWithImagePath(path).then((res) => {
+  //     form.setValue('duration', 0);
+  //     form.setValue('file_path', '');
+  //   });
+  // };
 
   return (
     <div className="gap-10 max-w-3xl lg:mx-auto mx-5 py-5">
@@ -292,7 +275,21 @@ export function DetailForm({ author, detail, genre }: CreateFormProps) {
                 </FormItem>
               )}
             />
-            {!form.watch('file_path') && (
+
+            <FormField
+              control={form.control}
+              name="file_path"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>YoutubeId</FormLabel>
+                  <FormControl>
+                    <Input placeholder="File ID" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* {!form.watch('file_path') && (
               <UploadFile
                 onDrop={(v) => {
                   console.log(v);
@@ -335,7 +332,7 @@ export function DetailForm({ author, detail, genre }: CreateFormProps) {
                   <Trash2 size={16} /> Delete
                 </Button>
               </div>
-            )}
+            )} */}
             <div className='className="flex justify-end"'>
               <Button type="submit">Submit</Button>
             </div>

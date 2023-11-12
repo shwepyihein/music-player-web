@@ -11,27 +11,31 @@ import {
   SkipForward,
   Volume2,
 } from 'lucide-react';
+import YouTube from 'react-youtube';
 import { twMerge } from 'tailwind-merge';
 import DetailSheet from './detail-sheet';
-import DisplayTrack from './display';
 
 const MusicPlayer = () => {
   const {
-    handleProgressChange,
-    progressBarRef,
+    handlePrevTrack,
+    handleNextTrack,
     togglePlayPause,
-    currentTrack,
-    timeProgress,
+    currentTime,
+    onStateChange,
     duration,
     isPlaying,
-    audioRef,
-    setDuration,
+    onProgressChange,
+    onReady,
     volume,
-    setVolume,
+    onVolumeChange,
+    currentTrack,
+    getCurrentTrack,
+    loading,
   } = useMusic();
-  if (!currentTrack) {
-    return null;
-  }
+  // if (!currentTrack) {
+  //   return null;
+  // }
+
   return (
     <div
       className={twMerge(
@@ -42,41 +46,50 @@ const MusicPlayer = () => {
         <input
           type="range"
           className="bg-white  py-0 w-full"
-          ref={progressBarRef}
-          defaultValue="0"
-          onChange={handleProgressChange}
+          min="0"
+          max="100"
+          step="1"
+          value={(currentTime / duration) * 100 || 0}
+          onChange={onProgressChange}
         />
 
         <div className="flex-start flex bg-[--music-bar-color] items-center h-[--ytmusic-bar-height]">
           <div className="px-4 gap-5 flex justify-between items-center flex-shrink-0  w-[--ytmusic-guide-width]">
-            <div>
-              <SkipBack fill="#fff" size={16} />
-            </div>
-            <div>
-              {!isPlaying ? (
-                <Play onClick={togglePlayPause} fill="#fff" size={16} />
-              ) : (
-                <Pause onClick={togglePlayPause} fill="#fff" size={16} />
-              )}
-            </div>
-            <div>
-              <SkipForward fill="#fff" size={16} />
-            </div>
+            {loading ? (
+              <div>loading</div>
+            ) : (
+              <>
+                <div className="cursor-pointer" onCanPlay={handlePrevTrack}>
+                  <SkipBack fill="#fff" size={16} />
+                </div>
+                <div>
+                  {!isPlaying ? (
+                    <Play onClick={togglePlayPause} fill="#fff" size={16} />
+                  ) : (
+                    <Pause onClick={togglePlayPause} fill="#fff" size={16} />
+                  )}
+                </div>
+                <div className="cursor-pointer" onClick={handleNextTrack}>
+                  <SkipForward fill="#fff" size={16} />
+                </div>
+              </>
+            )}
 
             <div>
               <p className="text-gray-100/40  text-[12px]">
-                {formatTime(timeProgress)}/{formatTime(duration)}
+                {formatTime(currentTime)}/{formatTime(duration)}
               </p>
             </div>
           </div>
-          <div className="w-[200px] h-[200px] ">
-            <DisplayTrack
-              currentTrack={currentTrack}
-              audioRef={audioRef}
-              progressBarRef={progressBarRef}
-              setDuration={setDuration}
-            />
-          </div>
+
+          <YouTube
+            className="hidden"
+            style={{ width: 0, height: 0 }}
+            videoId={getCurrentTrack().videoId}
+            opts={{ height: '390', width: '640' }}
+            onReady={onReady}
+            onStateChange={onStateChange}
+          />
 
           <div className="max-w-[900px] flex items-center mx-auto  h-[--ytmusic-bar-height]  ">
             <DetailSheet />
@@ -87,14 +100,16 @@ const MusicPlayer = () => {
               <div className="w-full flex items-center col-span-2">
                 <input
                   type="range"
-                  min={0}
-                  max={100}
+                  min="0"
+                  max="100"
+                  step="1"
                   value={volume}
                   style={{
                     background: `linear-gradient(to right, #fff ${volume}%, #ccc ${volume}%)`,
                   }}
-                  onChange={(e) => setVolume(e.target.value)}
+                  onChange={onVolumeChange}
                 />
+                <p>{volume} %</p>
               </div>
               <div className="px-4 gap-5 col-span-5 flex  justify-end items-center flex-shrink-0">
                 <div>
